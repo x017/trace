@@ -7,5 +7,9 @@ requires-python = ">=3.12"
 dependencies = [
   "django",
   "django-tailwind",
-  "django-cotton"
+  "django-cotton",
+  "markdown",
+  "Pygments",
+  "Pillow",
+  "dotenv"
 ]
