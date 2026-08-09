@@ -1,0 +1,22 @@
+{% extends "panel/base.html" %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+    <div class="card">
+        <div class="stat-label">Total Posts</div>
+        <div class="stat-value">{{ total_posts }}</div>
+    </div>
+    <div class="card">
+        <div class="stat-label">Published</div>
+        <div class="stat-value">{{ published_posts }}</div>
+    </div>
+    <div class="card">
+        <div class="stat-label">Drafts</div>
+        <div class="stat-value">{{ draft_posts }}</div>
+    </div>
+    <div class="card">
+        <div class="stat-label">Categories</div>
+        <div class="stat-value">{{ total_categories }}</div>
+    </div>
+</div>
+{% endblock %}
