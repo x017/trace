@@ -1,0 +1,10 @@
+[project]
+name = "trace"
+version = "0.1.0"
+description = "Minimal Weblog Written in Django"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "django",
+  "django-shadcn",
+]
