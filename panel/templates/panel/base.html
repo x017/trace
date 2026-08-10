@@ -185,7 +185,7 @@
         <nav class="nav-section">
             <div class="nav-label">Content</div>
             <a href="{% url 'panel:dashboard' %}" class="nav-link {% if active == 'dashboard' %}active{% endif %}">Dashboard</a>
-            <a href="{% url 'panel:posts' %}" class="nav-link {% if active == 'posts' %}active{% endif %}">Posts</a>
+            <a href="{% url 'panel:post:list' %}" class="nav-link {% if active == 'posts' %}active{% endif %}">Posts</a>
         </nav>
 
         <div class="sidebar-footer">
