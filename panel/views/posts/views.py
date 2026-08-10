@@ -6,7 +6,7 @@ from blog.models import Post
 
 class PostListView(LoginRequiredMixin, ListView):
     model = Post
-    template_name = "panel/posts.html"
+    template_name = "post/list.html"
     context_object_name = "posts"
     paginate_by = 20
 

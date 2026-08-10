@@ -1,0 +1,57 @@
+{% extends "panel/base.html" %}
+{% block page_title %}Posts{% endblock %}
+
+{% block content %}
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 1px solid var(--border);">
+                <th style="text-align: left; padding: 12px 16px; color: var(--text-dim); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Title</th>
+                <th style="text-align: left; padding: 12px 16px; color: var(--text-dim); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Status</th>
+                <th style="text-align: left; padding: 12px 16px; color: var(--text-dim); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Categories</th>
+                <th style="text-align: left; padding: 12px 16px; color: var(--text-dim); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Views</th>
+                <th style="text-align: left; padding: 12px 16px; color: var(--text-dim); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+            <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px 16px;">
+                    <a href="#" style="color: var(--text); text-decoration: none; font-weight: 500;">{{ post.title }}</a>
+                </td>
+                <td style="padding: 12px 16px;">
+                    {% if post.status == 2 %}
+                        <span style="background: #16a34a22; color: #4ade80; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500;">Published</span>
+                    {% elif post.status == 1 %}
+                        <span style="background: #71717a22; color: #a1a1aa; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500;">Draft</span>
+                    {% else %}
+                        <span style="background: #dc262622; color: #f87171; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500;">Archived</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 12px 16px; color: var(--text-dim);">
+                    {% for category in post.category.all %}{{ category.name }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}
+                </td>
+                <td style="padding: 12px 16px; color: var(--text-dim);">{{ post.views }}</td>
+                <td style="padding: 12px 16px; color: var(--text-dim);">{{ post.created_at|date:"M d, Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="padding: 32px 16px; text-align: center; color: var(--text-dim);">No posts yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if is_paginated %}
+<div style="display: flex; gap: 8px; margin-top: 16px; justify-content: center;">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="nav-link" style="width: auto;">Prev</a>
+    {% endif %}
+    <span style="color: var(--text-dim); padding: 8px 12px;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="nav-link" style="width: auto;">Next</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
