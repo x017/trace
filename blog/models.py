@@ -48,3 +48,13 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+
+class Images(models.Model):
+    image = models.ImageField()
+
+    is_active = models.BooleanField(default=True)
+    is_header = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
