@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView
-
+from django.views.generic import CreateView, ListView
+from django.urls import reverse_lazy
 from blog.models import Post
+from panel.views.posts.forms import PostForm
 
 
 class PostListView(LoginRequiredMixin, ListView):
@@ -14,3 +15,14 @@ class PostListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["active"] = "posts"
         return context
+
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = "post/create.html"
+    success_url = reverse_lazy("panel:post:list")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
