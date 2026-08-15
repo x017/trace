@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from martor.models import MartorField
 
 # Create your models here.
 
@@ -25,10 +26,11 @@ class Post(models.Model):
         ARCHIVED = 3
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    header = models.ImageField(null=True, blank=True)
 
     title = models.CharField(max_length=1000)
     slug = models.SlugField(max_length=256, unique=True)
-    content = models.TextField()
+    content = MartorField()
 
     category = models.ManyToManyField(Category, related_name="posts")
 
