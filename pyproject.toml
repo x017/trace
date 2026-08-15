@@ -11,5 +11,9 @@ dependencies = [
   "markdown",
   "Pygments",
   "Pillow",
-  "dotenv"
+  "dotenv",
+  "martor",
+  "django-parler"
+
 ]
+
