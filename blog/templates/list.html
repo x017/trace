@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}وبلاگ{% endblock %}
+
+{% block content %}
+<div class="space-y-8" dir="rtl">
+  
+  <h1 class="text-3xl font-bold text-white border-b border-zinc-800 pb-4">همهٔ نوشته‌ها</h1>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for post in posts %}
+      {% include "partials/post_card.html" with post=post %}
+    {% empty %}
+      <div class="col-span-full text-center text-zinc-500 py-12">
+        <i class="fas fa-inbox text-4xl mb-3 block"></i>
+        <p>هیچ نوشته‌ای یافت نشد.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if is_paginated %}
+    <div class="flex justify-center gap-2 mt-8">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 border border-zinc-700 rounded hover:bg-zinc-800 transition">قبلی</a>
+      {% endif %}
+      <span class="px-4 py-2 bg-accent/10 text-accent border border-accent/30 rounded">{{ page_obj.number }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 border border-zinc-700 rounded hover:bg-zinc-800 transition">بعدی</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
