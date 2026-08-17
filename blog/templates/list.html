@@ -1,32 +1,81 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}وبلاگ{% endblock %}
+{% block title %}Blog{% endblock %}
 
 {% block content %}
-<div class="space-y-8" dir="rtl">
-  
-  <h1 class="text-3xl font-bold text-white border-b border-zinc-800 pb-4">همهٔ نوشته‌ها</h1>
-  
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-8">
+  <!-- Single‑column flex layout -->
+  <div class="flex flex-col gap-6">
     {% for post in posts %}
-      {% include "partials/post_card.html" with post=post %}
+      <!-- Clickable card – full width -->
+      <a href="{% url 'blog:detail' slug=post.slug %}" 
+         class="group relative overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-all duration-300 h-full min-h-[200px] block focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
+        
+        {# Background image #}
+        {% if post.header %}
+          <div class="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 group-hover:scale-100 transition-transform duration-500"
+               style="background-image: url('{{ post.header.url }}');">
+          </div>
+        {% else %}
+          <div class="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900"></div>
+        {% endif %}
+
+        {# Gradient overlay – right to left (dark on the right) #}
+        <div class="absolute inset-0 bg-gradient-to-l from-black/95 via-black/40 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+
+        {# Content – RTL direction #}
+        <div class="relative z-10 p-6 flex flex-col justify-end h-full text-white" dir="rtl">
+          
+          {# Meta info #}
+          <div class="flex flex-wrap items-center gap-2 text-xs text-zinc-300 mb-2">
+            <span class="inline-flex items-center gap-1">
+              <i class="far fa-calendar-alt"></i>
+              {{ post.created_at|date:"Y/m/d" }}
+            </span>
+            {% if post.category.all %}
+              <span class="w-px h-3 bg-zinc-600"></span>
+              <span class="inline-flex items-center gap-1">
+                <i class="fas fa-tag"></i>
+                {% for cat in post.category.all %}
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-xs">{{ cat.name }}</span>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+              </span>
+            {% endif %}
+          </div>
+
+          {# Excerpt #}
+          {% if post.content|striptags|length > 0 %}
+            <p class="text-sm text-zinc-200/80 line-clamp-2">
+              {{ post.content|striptags|truncatechars:120 }}
+            </p>
+          {% endif %}
+
+          {# Read more button – appears on hover #}
+          <div class="mt-3 flex items-center gap-2 text-sm font-medium text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span>ادامه مطلب</span>
+            <i class="fas fa-arrow-left text-xs transition-transform duration-300 group-hover:translate-x-1"></i>
+          </div>
+        </div>
+      </a>
     {% empty %}
       <div class="col-span-full text-center text-zinc-500 py-12">
         <i class="fas fa-inbox text-4xl mb-3 block"></i>
-        <p>هیچ نوشته‌ای یافت نشد.</p>
+        <p>No posts found.</p>
       </div>
     {% endfor %}
   </div>
 
+  {# Pagination #}
   {% if is_paginated %}
     <div class="flex justify-center gap-2 mt-8">
       {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 border border-zinc-700 rounded hover:bg-zinc-800 transition">قبلی</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 border border-zinc-700 hover:bg-zinc-800 transition">Previous</a>
       {% endif %}
-      <span class="px-4 py-2 bg-accent/10 text-accent border border-accent/30 rounded">{{ page_obj.number }}</span>
+      <span class="px-4 py-2 bg-accent/10 text-accent border border-accent/30">{{ page_obj.number }}</span>
       {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 border border-zinc-700 rounded hover:bg-zinc-800 transition">بعدی</a>
+        <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 border border-zinc-700 hover:bg-zinc-800 transition">Next</a>
       {% endif %}
     </div>
   {% endif %}
