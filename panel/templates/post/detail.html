@@ -1,0 +1,350 @@
+{% extends "panel/base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+{% block page_title %}Post{% endblock %}
+
+{% block content %}
+
+<div class="post-detail" dir="rtl">
+
+    {# --- Hero banner --- #}
+    <div class="post-hero {% if post.header %}has-image{% endif %}">
+
+        {% if post.header %}
+            <div class="post-hero-image">
+                <img src="{{ post.header.url }}" alt="{{ post.title }}">
+                <div class="post-hero-overlay"></div>
+            </div>
+        {% endif %}
+
+        <div class="post-hero-content">
+            <h1 class="post-hero-title">{{ post.title }}</h1>
+
+            <div class="post-hero-meta">
+                {{ post.user.username }}
+                ·
+                {{ post.created_at|date:"M d, Y" }}
+                {% if post.category.all %}
+                    · 
+                    {% for cat in post.category.all %}
+                        <span class="hero-category">{{ cat.name }}</span>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            {# --- Elegant Buttons --- #}
+            <div class="post-hero-actions">
+                <a href="{% url 'panel:post:list' %}" 
+                   class="group inline-flex items-center gap-2.5 px-5 py-2.5 text-sm font-medium text-white/90 transition-all duration-300 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 hover:text-white hover:scale-[1.02] hover:shadow-lg hover:shadow-black/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/40">
+                    <i class="fas fa-arrow-right text-sm transition-transform duration-300 group-hover:-translate-x-1"></i>
+                    <span>Back</span>
+                </a>
+                <a href="{% url 'panel:post:update' post.pk %}" 
+                   class="group inline-flex items-center gap-2.5 px-6 py-2.5 text-sm font-medium text-white transition-all duration-300 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-400 hover:from-indigo-400 hover:to-indigo-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-indigo-400/60">
+                    <i class="fas fa-pencil-alt text-sm transition-transform duration-300 group-hover:rotate-[-6deg]"></i>
+                    <span>Edit</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# --- Main layout --- #}
+    <div class="post-layout">
+
+        <article class="post-content">
+            {% if post.content %}
+                {{ post.content|safe }}
+                {# or {{ post.content|martor }} #}
+            {% else %}
+                <p class="empty-content">This post has no content yet.</p>
+            {% endif %}
+        </article>
+
+        <aside class="post-sidebar">
+
+            <div class="panel-section">
+                <div class="section-title">Status</div>
+                <div class="info-value">
+                    {{ post.get_status_display }}
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="section-title">Views</div>
+                <div class="info-value">
+                    {{ post.views }}
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="section-title">Updated</div>
+                <div class="info-value">
+                    {{ post.updated_at|date:"M d, Y H:i" }}
+                </div>
+            </div>
+
+            {% if post.header %}
+                <div class="panel-section">
+                    <div class="section-title">Header Image</div>
+                    <div class="info-value">
+                        <a href="{{ post.header.url }}" target="_blank" class="image-link">
+                            <i class="fas fa-image"></i> View full image
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+
+        </aside>
+
+    </div>
+
+</div>
+
+<style>
+    /* --- Base --- */
+    .post-detail {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* --- Hero --- */
+    .post-hero {
+        position: relative;
+        margin-bottom: 28px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        min-height: 140px;
+        display: flex;
+        align-items: center;
+    }
+
+    .post-hero.has-image {
+        min-height: 200px;
+    }
+
+    .post-hero-image {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+    }
+
+    .post-hero-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* RTL: overlay gradient from right to left */
+    .post-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to left, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0.2) 80%);
+        z-index: 1;
+    }
+
+    .post-hero-content {
+        position: relative;
+        z-index: 2;
+        padding: 28px 32px;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .post-hero-title {
+        font-size: 26px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: #fff;
+        margin: 0;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        flex: 1 1 100%;
+        text-align: right;  /* RTL */
+    }
+
+    .post-hero-meta {
+        font-size: 13px;
+        color: rgba(255,255,255,0.75);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .hero-category {
+        display: inline-block;
+        background: rgba(255,255,255,0.15);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        color: #fff;
+        backdrop-filter: blur(4px);
+    }
+
+    .post-hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-shrink: 0;
+    }
+
+    /* --- Layout --- */
+    .post-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 240px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    .post-content {
+        min-width: 0;
+        padding: 24px;
+
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+
+        line-height: 1.75;
+        color: var(--text);
+    }
+
+    /* RTL: content text alignment */
+    .post-content {
+        text-align: right;
+    }
+    .post-content ul,
+    .post-content ol {
+        margin-right: 1.5em;
+        margin-left: 0;
+    }
+    .post-content blockquote {
+        border-left: none;
+        border-right: 4px solid var(--accent);
+        padding-right: 16px;
+        padding-left: 0;
+    }
+
+    .empty-content {
+        color: var(--text-dim);
+        font-style: italic;
+        padding: 12px 0;
+    }
+
+    /* --- Sidebar --- */
+    .post-sidebar {
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        align-self: start;
+        position: sticky;
+        top: 24px;
+    }
+
+    .panel-section {
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+    }
+    .panel-section:last-child {
+        border-bottom: none;
+    }
+
+    .section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        color: var(--text-dim);
+        margin-bottom: 8px;
+        text-align: right;
+    }
+
+    .info-value {
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 500;
+        text-align: right;
+    }
+
+    .image-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 400;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .image-link:hover {
+        text-decoration: underline;
+    }
+
+    /* --- Post content typography (RTL) --- */
+    .post-content h1,
+    .post-content h2,
+    .post-content h3,
+    .post-content h4 {
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+        font-weight: 600;
+        color: var(--text);
+    }
+    .post-content p {
+        margin: 0 0 1.2em;
+    }
+    .post-content pre,
+    .post-content code {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 0.2em 0.4em;
+        font-size: 0.9em;
+        color: var(--text);
+    }
+    .post-content pre {
+        padding: 12px;
+        overflow-x: auto;
+    }
+    .post-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+        margin: 12px 0;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 800px) {
+        .post-hero {
+            min-height: 140px;
+        }
+        .post-hero.has-image {
+            min-height: 160px;
+        }
+        .post-hero-content {
+            padding: 20px;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .post-hero-title {
+            font-size: 22px;
+        }
+        .post-hero-actions {
+            width: 100%;
+            justify-content: flex-start;
+        }
+        .post-layout {
+            grid-template-columns: 1fr;
+        }
+        .post-sidebar {
+            position: static;
+        }
+    }
+</style>
+
+{% endblock %}

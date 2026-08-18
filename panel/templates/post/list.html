@@ -17,7 +17,7 @@
             {% for post in posts %}
             <tr style="border-bottom: 1px solid var(--border);">
                 <td style="padding: 12px 16px;">
-                    <a href="#" style="color: var(--text); text-decoration: none; font-weight: 500;">{{ post.title }}</a>
+                  <a href="{% url 'panel:post:detail' post.pk %}" style="color: var(--text); text-decoration: none; font-weight: 500;">{{ post.title }}</a>
                 </td>
                 <td style="padding: 12px 16px;">
                     {% if post.status == 2 %}
