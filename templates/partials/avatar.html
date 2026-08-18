@@ -1,0 +1,25 @@
+{# partials/avatar.html #}
+<div class="flex items-start gap-5">
+  <!-- Avatar image -->
+  <div class="relative flex-shrink-0">
+    <img 
+      alt="Parsa"
+      class="w-16 h-16 object-cover rounded-full border border-zinc-700"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+    >
+    <!-- Fallback -->
+    <div class="w-16 h-16 rounded-full bg-zinc-800 border border-zinc-700 hidden items-center justify-center text-xl font-bold text-accent">
+      P
+    </div>
+  </div>
+
+  <!-- Name + title -->
+  <div class="pt-1">
+    <h1 class="text-2xl font-bold text-white tracking-tight leading-none">
+      Parsa
+    </h1>
+    <p class="text-sm text-zinc-400 mt-1.5 font-mono">
+      Backend Developer & Systems Architect
+    </p>
+  </div>
+</div>

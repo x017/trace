@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="antialiased scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Parsa - Backend Engineer{% endblock %}</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <script src="https://unpkg.com/htmx.org@2.0.0"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
+          },
+          colors: {
+            bg: '#111111',
+            card: '#FFFFFF',
+            border: '#282828',
+            muted: '#888888',
+            accent: '#38bdf8',
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="{% static 'css/pygments.css' %}">
+
+  <style>
+    body { background-color: #111111; color: #eaeaea; }
+    .bg-grid {
+      background-size: 50px 50px;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+      mask-image: radial-gradient(circle at center, black 50%, transparent 100%);
+      -webkit-mask-image: radial-gradient(circle at center, black 50%, transparent 100%);
+    }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 15px 2px rgba(56,189,248,0.6); }
+      50% { box-shadow: 0 0 25px 4px rgba(56,189,248,0.9); }
+    }
+    .glow-indicator {
+      box-shadow: 0 0 15px 2px rgba(56,189,248,0.6);
+      animation: glow 3s ease-in-out infinite;
+      will-change: box-shadow;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #111; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+    .tab-btn {
+      position: relative;
+      padding: 0.5rem 1rem;
+      color: #888;
+      transition: all 0.2s;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+      font-size: 0.875rem;
+    }
+    .tab-btn:hover { color: #ccc; }
+    .tab-btn.active { color: #38bdf8; }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0; right: 0;
+      height: 2px;
+      background: #38bdf8;
+    }
+
+    .tab-content {
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    .tab-content.active {
+      display: block;
+      animation: fadeInUp 0.4s ease forwards;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    {% block extra_css %}{% endblock %}
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen relative font-sans">
+  <!-- Background -->
+  <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+    <div class="absolute inset-0 bg-[#111111]"></div>
+    <div class="absolute inset-0 bg-grid opacity-100"></div>
+    <div class="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-accent/10 rounded-full blur-[120px] opacity-40"></div>
+    <div class="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-blue-900/20 rounded-full blur-[120px] opacity-40"></div>
+  </div>
+
+  <main class="relative z-10 mx-auto {% block main_container_classes %}max-w-3xl py-12 px-6 md:px-12 lg:py-20{% endblock %}">
+
+    <!-- ========== HEADER (always visible) ========== -->
+
+    <header class="mb-10">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+        <div>
+          <h1 class="text-3xl font-bold text-white tracking-tight">
+            {% block header_name %}Parsa{% endblock %}
+          </h1>
+          <p class="text-sm text-zinc-400 mt-1 font-mono">
+            {% block header_title %}Backend Developer & Systems Architect{% endblock %}
+          </p>
+        </div>
+        <div class="flex gap-4 text-sm text-zinc-500">
+          {% block social_links %}
+          <!-- child can override -->
+          {% endblock %}
+        </div>
+      </div>
+      <!-- ========== NAV (always visible) ========== -->
+      <nav class="border-b border-zinc-800">
+        <div class="flex gap-1 font-mono text-sm">
+          {% block nav_buttons %}
+          <!-- child supplies the buttons -->
+          {% endblock %}
+        </div>
+      </nav>
+    </header>
+
+    <!-- ========== TAB PANELS ========== -->
+    <div class="tab-contents">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    <footer class="pt-12 text-center pb-8 border-t border-zinc-900 mt-20">
+      <p class="text-xs font-mono text-zinc-600">© 2026 Parsa. Built with Trace</p>
+    </footer>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+          const tabId = this.dataset.tab;
+
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabContents.forEach(c => c.classList.remove('active'));
+
+          this.classList.add('active');
+          const target = document.getElementById('tab-' + tabId);
+          if (target) target.classList.add('active');
+        });
+      });
+
+      // Activate the initially marked tab
+      const firstActive = document.querySelector('.tab-btn.active');
+      if (firstActive) {
+        const firstId = firstActive.dataset.tab;
+        const firstContent = document.getElementById('tab-' + firstId);
+        if (firstContent) firstContent.classList.add('active');
+      }
+    });
+  </script>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+

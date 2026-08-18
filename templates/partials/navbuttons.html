@@ -1,0 +1,22 @@
+
+
+    <!-- Navigation – you can add more buttons by extending the block -->
+    <nav class="border-b border-zinc-800 mb-12">
+      <div class="flex gap-1 font-mono text-sm">
+        {% block nav_buttons %}
+        <button class="tab-btn active" data-tab="home">
+          <i class="fas fa-home mr-2"></i>Home
+        </button>
+        <button class="tab-btn" data-tab="projects">
+          <i class="fas fa-flask mr-2"></i>Blogs
+        </button>
+        <button class="tab-btn" data-tab="projects">
+          <i class="fas fa-flask mr-2"></i>Projects
+        </button>
+        <!-- Add more <button> elements here in child templates -->
+        {% endblock %}
+      </div>
+    </nav>
+
+
+
