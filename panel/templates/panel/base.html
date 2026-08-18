@@ -4,7 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>{% block title %}Panel{% endblock %} — Admin</title>
+
+    <!-- Remix Icon CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+
+    <script src="{% static 'js/tailwind.min.js' %}"></script>
+
     <style>
         :root {
             --bg: #0f0f10;
@@ -17,7 +24,11 @@
             --radius: 8px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -29,6 +40,7 @@
         }
 
         /* Sidebar */
+
         .sidebar {
             width: 240px;
             flex-shrink: 0;
@@ -45,9 +57,14 @@
             padding: 0 20px 20px;
             border-bottom: 1px solid var(--border);
             margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .sidebar-brand span { color: var(--accent); }
+        .sidebar-brand span {
+            color: var(--accent);
+        }
 
         .nav-section {
             padding: 0 12px;
@@ -64,7 +81,7 @@
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;          /* increased for icon spacing */
             padding: 8px 12px;
             border-radius: var(--radius);
             color: var(--text-dim);
@@ -93,6 +110,12 @@
             margin-right: 7px;
         }
 
+        /* Icon size (optional) */
+        .nav-link i {
+            font-size: 18px;
+            line-height: 1;
+        }
+
         .sidebar-footer {
             margin-top: auto;
             padding: 16px 20px 0;
@@ -119,10 +142,17 @@
             font-size: 12px;
         }
 
-        .user-name { font-weight: 500; }
-        .user-role { font-size: 12px; color: var(--text-dim); }
+        .user-name {
+            font-weight: 500;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
 
         /* Main content */
+
         .main {
             flex: 1;
             display: flex;
@@ -149,7 +179,8 @@
             flex: 1;
         }
 
-        /* Reusable bits for dashboard/pages */
+        /* Reusable bits */
+
         .card {
             background: var(--bg-panel);
             border: 1px solid var(--border);
@@ -173,40 +204,76 @@
             color: var(--text-dim);
         }
 
-        a { color: var(--accent); }
+        a {
+            color: var(--accent);
+        }
     </style>
+
     {% block extra_head %}{% endblock %}
+    {% block extra_css %}{% endblock %}
 </head>
+
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-brand">panel<span>.</span></div>
+        <div class="sidebar-brand">
+            <i class="ri-dashboard-3-line"></i>  <!-- optional icon for brand -->
+            panel<span>.</span>
+        </div>
 
         <nav class="nav-section">
             <div class="nav-label">Content</div>
-            <a href="{% url 'panel:dashboard' %}" class="nav-link {% if active == 'dashboard' %}active{% endif %}">Dashboard</a>
-            <a href="{% url 'panel:post:list' %}" class="nav-link {% if active == 'posts' %}active{% endif %}">Posts</a>
+
+            <a
+                href="{% url 'panel:dashboard' %}"
+                class="nav-link {% if active == 'dashboard' %}active{% endif %}"
+            >
+                <i class="ri-dashboard-line"></i> Dashboard
+            </a>
+
+            <a
+                href="{% url 'panel:post:list' %}"
+                class="nav-link {% if active == 'posts' %}active{% endif %}"
+            >
+                <i class="ri-file-list-line"></i> Posts
+            </a>
         </nav>
 
         <div class="sidebar-footer">
             <div class="user-chip">
-                <div class="user-avatar">{{ request.user.username|first|upper }}</div>
+                <div class="user-avatar">
+                    {{ request.user.username|first|upper }}
+                </div>
+
                 <div>
-                    <div class="user-name">{{ request.user.username }}</div>
-                    <div class="user-role">Admin</div>
+                    <div class="user-name">
+                        {{ request.user.username }}
+                    </div>
+
+                    <div class="user-role">
+                        Admin
+                    </div>
                 </div>
             </div>
         </div>
     </aside>
 
     <div class="main">
+
         <div class="topbar">
-            <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+            <h1>
+                {% block page_title %}Dashboard{% endblock %}
+            </h1>
+            <!-- You could add a theme toggle icon here -->
         </div>
+
         <div class="content">
             {% block content %}{% endblock %}
         </div>
+
     </div>
+
+    {% block extra_js %}{% endblock %}
 
 </body>
 </html>
