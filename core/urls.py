@@ -17,5 +17,17 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from blog.views import Homepage
+from core import settings
+from django.conf.urls.static import static
 
-urlpatterns = [path("admin/", admin.site.urls), path("panel/", include("panel.urls"))]
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("panel/", include("panel.urls")),
+    path("martor/", include("martor.urls")),
+    path("blog/", include("blog.urls")),
+    path("", Homepage.as_view(), name="homepage"),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
