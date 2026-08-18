@@ -49,6 +49,9 @@ class Post(models.Model):
         self.slug = slug
         super().save(*args, **kwargs)
 
+    class Meta:
+        ordering = ("-created_at",)
+
 
 class Images(models.Model):
     image = models.ImageField()
